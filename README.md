@@ -70,6 +70,9 @@ shaders/
 - Run: `WASD` / Arrow keys.
 - Combat: mouse drag/drop cards to `PLAY AREA`, `1..5` to play indexed hand cards, `R` to end turn.
 
+- Deck Builder now includes a live CardView preview pane (select collection/deck entries to inspect full description + ASCII art).
+- Run movement polling uses action `just_pressed` in `_process`, so WASD/arrow movement works reliably regardless of UI focus.
+
 ## Notes
 - Save file: `user://save.json`
 - Deterministic RNG defaults to enabled via `save.settings.debug_seed`.

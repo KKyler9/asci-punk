@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/deck_builder.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/CardView.tscn" id="2"]
 
 [node name="DeckBuilder" type="Control"]
 layout_mode = 3
@@ -71,7 +72,22 @@ layout_mode = 2
 layout_mode = 2
 autowrap_mode = 2
 
+[node name="PreviewCol" type="VBoxContainer" parent="Root"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PreviewTitle" type="Label" parent="Root/PreviewCol"]
+layout_mode = 2
+text = "Card Preview"
+
+[node name="PreviewCard" parent="Root/PreviewCol" instance=ExtResource("2")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
 [connection signal="pressed" from="Root/Buttons/Add" to="." method="_on_add_pressed"]
 [connection signal="pressed" from="Root/Buttons/Remove" to="." method="_on_remove_pressed"]
 [connection signal="pressed" from="Root/Buttons/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="Root/Buttons/StartRun" to="." method="_on_start_run_pressed"]
+[connection signal="item_selected" from="Root/CollectionCol/CollectionList" to="." method="_on_collection_list_item_selected"]
+[connection signal="item_selected" from="Root/DeckCol/DeckList" to="." method="_on_deck_list_item_selected"]

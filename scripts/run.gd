@@ -22,23 +22,23 @@ func _ready() -> void:
 		run_state.player_pos = {"x":1,"y":1}
 	_refresh_map()
 
-func _refresh_map() -> void:
-	map_view.text = ExplorationSystemRes.map_to_text(run_state.grid)
-
-func _input(event: InputEvent) -> void:
+func _process(_delta: float) -> void:
 	if reward_panel.visible:
 		return
-	var delta := Vector2i.ZERO
-	if event.is_action_pressed("move_up"):
+	var delta: Vector2i = Vector2i.ZERO
+	if Input.is_action_just_pressed("move_up"):
 		delta = Vector2i(0, -1)
-	elif event.is_action_pressed("move_down"):
+	elif Input.is_action_just_pressed("move_down"):
 		delta = Vector2i(0, 1)
-	elif event.is_action_pressed("move_left"):
+	elif Input.is_action_just_pressed("move_left"):
 		delta = Vector2i(-1, 0)
-	elif event.is_action_pressed("move_right"):
+	elif Input.is_action_just_pressed("move_right"):
 		delta = Vector2i(1, 0)
 	if delta != Vector2i.ZERO:
 		_move(delta)
+
+func _refresh_map() -> void:
+	map_view.text = ExplorationSystemRes.map_to_text(run_state.grid)
 
 func _move(delta: Vector2i) -> void:
 	var p: Dictionary = run_state.player_pos
@@ -53,8 +53,8 @@ func _move(delta: Vector2i) -> void:
 	_refresh_map()
 	match tile:
 		"E":
-			var enemies := EnemiesContentRes.all_enemies()
-			var picked = enemies[GameState.rng.randi_range(0, enemies.size() - 1)]
+			var enemies: Array = EnemiesContentRes.all_enemies()
+			var picked: Dictionary = enemies[GameState.rng.randi_range(0, enemies.size() - 1)]
 			GameState.save.run = run_state
 			emit_signal("request_combat", String(picked.id))
 		"T":
@@ -69,7 +69,7 @@ func _show_card_reward() -> void:
 	reward_panel.visible = true
 	for c in reward_buttons.get_children():
 		c.queue_free()
-	var all := CardsContentRes.all_cards()
+	var all: Array = CardsContentRes.all_cards()
 	for _i in 3:
 		var card: Dictionary = all[GameState.rng.randi_range(0, all.size() - 1)]
 		var btn := Button.new()
