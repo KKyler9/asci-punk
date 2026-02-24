@@ -22,7 +22,7 @@ func _ready() -> void:
 
 func _refresh() -> void:
 	var p: Dictionary = GameState.save.player
-	var has_account := p.handle != ""
+	var has_account: bool = p.handle != ""
 	account_panel.visible = not has_account
 	main_panel.visible = has_account
 	if has_account:

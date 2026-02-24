@@ -17,6 +17,9 @@ scenes/
     CardHand.tscn
     DropZone.tscn
     CRTOverlay.tscn
+  tests/
+    TestMenu.tscn
+    CardSandbox.tscn
 scripts/
   main.gd
   hub.gd
@@ -38,6 +41,9 @@ scripts/
     card_view.gd
     card_hand.gd
     drop_zone.gd
+  tests/
+    test_menu.gd
+    card_sandbox.gd
 shaders/
   crt_shader.gdshader
 ```
@@ -52,6 +58,12 @@ shaders/
    - `Combat/EnemyPanel/EnemyVBox/EnemyAscii`
    - `scenes/ui/CardView.tscn` -> `Art`
 4. Open `scenes/Main.tscn` and run.
+
+
+## Testing scenes
+- Default runnable scene is still `res://scenes/Main.tscn` (full game loop).
+- Added quick test launcher: `res://scenes/tests/TestMenu.tscn`.
+- Added focused card interaction sandbox: `res://scenes/tests/CardSandbox.tscn` (drag/drop + hand fan + tilt).
 
 ## Controls
 - Hub: `S` start run, `D` deck builder.
