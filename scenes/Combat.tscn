@@ -1,0 +1,78 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat_screen.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/CardHand.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/DropZone.tscn" id="3"]
+
+[node name="Combat" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="EnemyPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 20.0
+offset_right = 180.0
+offset_bottom = 200.0
+
+[node name="EnemyVBox" type="VBoxContainer" parent="EnemyPanel"]
+layout_mode = 2
+
+[node name="EnemyStats" type="Label" parent="EnemyPanel/EnemyVBox"]
+layout_mode = 2
+
+[node name="EnemyAscii" type="RichTextLabel" parent="EnemyPanel/EnemyVBox"]
+layout_mode = 2
+fit_content = true
+scroll_active = false
+
+[node name="PlayerStats" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.0
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 220.0
+offset_right = -20.0
+offset_bottom = 248.0
+
+[node name="CombatLog" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.0
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 254.0
+offset_right = -20.0
+offset_bottom = 420.0
+scroll_active = false
+
+[node name="PlayArea" parent="." instance=ExtResource("3")]
+
+[node name="CardHand" parent="." instance=ExtResource("2")]
+
+[node name="EndTurnButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -50.0
+offset_right = 80.0
+offset_bottom = -15.0
+text = "End Turn (R)"
+
+[node name="AnimTimer" type="Timer" parent="."]
+
+[connection signal="pressed" from="EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="timeout" from="AnimTimer" to="." method="_on_anim_timer_timeout"]
