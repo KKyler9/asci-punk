@@ -34,7 +34,7 @@ func _notification(what: int) -> void:
 		save_game("Saved on quit")
 
 func _apply_rng_settings() -> void:
-	var settings := save.settings
+	var settings: Dictionary = save.settings
 	if settings.deterministic_rng:
 		rng.seed = int(settings.debug_seed)
 	else:
@@ -45,7 +45,7 @@ func save_game(msg := "Saved") -> void:
 	emit_signal("save_state_changed", msg)
 
 func ensure_account(handle: String, rig: String) -> void:
-	var player := save.player
+	var player: Dictionary = save.player
 	if player.handle != "":
 		return
 	player.handle = handle.strip_edges()
