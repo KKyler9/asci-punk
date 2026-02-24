@@ -18,7 +18,7 @@ static func all_cards() -> Array[Dictionary]:
 	]
 
 static func starter_deck_for_rig(rig: String) -> Array[String]:
-	var base := ["red_slash","red_slash","guard_matrix","guard_matrix","ping_spike","ping_spike","packet_sniff","reboot","overclock_strike","reflect_shell","bleed_packet","ice_wall"]
+	var base: Array[String] = ["red_slash","red_slash","guard_matrix","guard_matrix","ping_spike","ping_spike","packet_sniff","reboot","overclock_strike","reflect_shell","bleed_packet","ice_wall"]
 	if rig == "Assault":
 		base.append("red_slash")
 		base.erase("reboot")

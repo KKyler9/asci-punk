@@ -3,9 +3,9 @@ extends Control
 signal request_hub
 signal request_combat(enemy_id: String)
 
-const ExplorationSystem = preload("res://scripts/systems/exploration_system.gd")
-const CardsContent = preload("res://scripts/content/cards.gd")
-const EnemiesContent = preload("res://scripts/content/enemies.gd")
+const ExplorationSystemRes = preload("res://scripts/systems/exploration_system.gd")
+const CardsContentRes = preload("res://scripts/content/cards.gd")
+const EnemiesContentRes = preload("res://scripts/content/enemies.gd")
 
 @onready var map_view: RichTextLabel = $Outer/MapPanel/MapView
 @onready var log_label: Label = $Outer/LogLabel
@@ -18,12 +18,12 @@ func _ready() -> void:
 	run_state = GameState.save.run
 	if not bool(run_state.active):
 		run_state.active = true
-		run_state.grid = ExplorationSystem.generate_map(20, 12, GameState.rng)
+		run_state.grid = ExplorationSystemRes.generate_map(20, 12, GameState.rng)
 		run_state.player_pos = {"x":1,"y":1}
 	_refresh_map()
 
 func _refresh_map() -> void:
-	map_view.text = ExplorationSystem.map_to_text(run_state.grid)
+	map_view.text = ExplorationSystemRes.map_to_text(run_state.grid)
 
 func _input(event: InputEvent) -> void:
 	if reward_panel.visible:
@@ -53,7 +53,7 @@ func _move(delta: Vector2i) -> void:
 	_refresh_map()
 	match tile:
 		"E":
-			var enemies := EnemiesContent.all_enemies()
+			var enemies := EnemiesContentRes.all_enemies()
 			var picked = enemies[GameState.rng.randi_range(0, enemies.size() - 1)]
 			GameState.save.run = run_state
 			emit_signal("request_combat", String(picked.id))
@@ -69,7 +69,7 @@ func _show_card_reward() -> void:
 	reward_panel.visible = true
 	for c in reward_buttons.get_children():
 		c.queue_free()
-	var all := CardsContent.all_cards()
+	var all := CardsContentRes.all_cards()
 	for _i in 3:
 		var card: Dictionary = all[GameState.rng.randi_range(0, all.size() - 1)]
 		var btn := Button.new()

@@ -3,10 +3,10 @@ extends Control
 signal request_run
 signal request_hub
 
-const CombatSystem = preload("res://scripts/systems/combat_system.gd")
-const SynergySystem = preload("res://scripts/systems/synergy_system.gd")
-const EnemiesContent = preload("res://scripts/content/enemies.gd")
-const CardsContent = preload("res://scripts/content/cards.gd")
+const CombatSystemRes = preload("res://scripts/systems/combat_system.gd")
+const SynergySystemRes = preload("res://scripts/systems/synergy_system.gd")
+const EnemiesContentRes = preload("res://scripts/content/enemies.gd")
+const CardsContentRes = preload("res://scripts/content/cards.gd")
 
 @export var enemy_id := "sentinel"
 
@@ -24,25 +24,25 @@ var frame_idx := 0
 
 func _ready() -> void:
 	var enemy := _get_enemy(enemy_id)
-	var synergy := SynergySystem.analyze(GameState.save.player.deck)
-	battle = CombatSystem.start_battle(GameState.save.player, enemy, synergy, GameState.rng)
-	CombatSystem.refresh_turn(battle, GameState.save.player)
+	var synergy := SynergySystemRes.analyze(GameState.save.player.deck)
+	battle = CombatSystemRes.start_battle(GameState.save.player, enemy, synergy, GameState.rng)
+	CombatSystemRes.refresh_turn(battle, GameState.save.player)
 	enemy_frames = enemy.frames
 	for n in hand.get_children():
 		n.queue_free()
 	if hand.has_method("set_drop_zone"):
 		hand.set_drop_zone(drop_zone)
 	if hand.has_method("set_card_map"):
-		hand.set_card_map(CardsContent.by_id_map())
+		hand.set_card_map(CardsContentRes.by_id_map())
 	hand.card_play_requested.connect(_on_card_play_requested)
 	_refresh_ui()
 	$AnimTimer.start(0.2)
 
 func _get_enemy(id: String) -> Dictionary:
-	for e in EnemiesContent.all_enemies():
+	for e in EnemiesContentRes.all_enemies():
 		if e.id == id:
 			return e
-	return EnemiesContent.all_enemies()[0]
+	return EnemiesContentRes.all_enemies()[0]
 
 func _refresh_ui() -> void:
 	enemy_label.text = enemy_frames[frame_idx]
@@ -54,7 +54,7 @@ func _refresh_ui() -> void:
 		hand.set_hand(battle.hand)
 
 func _on_card_play_requested(card_id: String) -> void:
-	var res := CombatSystem.play_card(battle, GameState.save.player, card_id)
+	var res := CombatSystemRes.play_card(battle, GameState.save.player, card_id)
 	if res != "ok":
 		battle.log.append(res)
 	else:
@@ -63,11 +63,11 @@ func _on_card_play_requested(card_id: String) -> void:
 	_refresh_ui()
 
 func _on_end_turn_button_pressed() -> void:
-	CombatSystem.cleanup_hand_to_discard(battle)
-	CombatSystem.enemy_turn(battle, GameState.save.player)
+	CombatSystemRes.cleanup_hand_to_discard(battle)
+	CombatSystemRes.enemy_turn(battle, GameState.save.player)
 	if _check_battle_end():
 		return
-	CombatSystem.refresh_turn(battle, GameState.save.player)
+	CombatSystemRes.refresh_turn(battle, GameState.save.player)
 	_refresh_ui()
 
 func _check_battle_end() -> bool:

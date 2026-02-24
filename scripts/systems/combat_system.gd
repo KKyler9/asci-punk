@@ -1,7 +1,7 @@
 extends RefCounted
 class_name CombatSystem
 
-const CardsContent = preload("res://scripts/content/cards.gd")
+const CardsContentRes = preload("res://scripts/content/cards.gd")
 
 static func start_battle(player: Dictionary, enemy: Dictionary, synergy: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
 	var draw: Array = player.deck.duplicate()
@@ -42,7 +42,7 @@ static func draw_cards(battle: Dictionary, amount: int) -> void:
 		battle.hand.append(battle.draw_pile.pop_back())
 
 static func play_card(battle: Dictionary, player: Dictionary, card_id: String) -> String:
-	var map := CardsContent.by_id_map()
+	var map := CardsContentRes.by_id_map()
 	if not map.has(card_id):
 		return "Unknown card"
 	var card: Dictionary = map[card_id]

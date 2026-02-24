@@ -1,8 +1,8 @@
 extends Node
 
-const Models = preload("res://scripts/models.gd")
-const Persistence = preload("res://scripts/persistence.gd")
-const CardsContent = preload("res://scripts/content/cards.gd")
+const ModelsRes = preload("res://scripts/models.gd")
+const PersistenceRes = preload("res://scripts/persistence.gd")
+const CardsContentRes = preload("res://scripts/content/cards.gd")
 
 signal save_state_changed(text: String)
 signal leveled_up
@@ -14,19 +14,19 @@ func _ready() -> void:
 	load_or_create()
 
 func load_or_create() -> void:
-	var loaded := Persistence.load_data()
+	var loaded := PersistenceRes.load_data()
 	if loaded.is_empty():
 		save = {
-			"player": Models.default_player(),
-			"run": Models.default_run_state(),
-			"settings": Models.default_settings()
+			"player": ModelsRes.default_player(),
+			"run": ModelsRes.default_run_state(),
+			"settings": ModelsRes.default_settings()
 		}
 	else:
 		save = loaded
 		if not save.has("settings"):
-			save["settings"] = Models.default_settings()
+			save["settings"] = ModelsRes.default_settings()
 		if not save.has("run"):
-			save["run"] = Models.default_run_state()
+			save["run"] = ModelsRes.default_run_state()
 	_apply_rng_settings()
 
 func _notification(what: int) -> void:
@@ -41,7 +41,7 @@ func _apply_rng_settings() -> void:
 		rng.randomize()
 
 func save_game(msg := "Saved") -> void:
-	Persistence.save_data(save)
+	PersistenceRes.save_data(save)
 	emit_signal("save_state_changed", msg)
 
 func ensure_account(handle: String, rig: String) -> void:
@@ -52,7 +52,7 @@ func ensure_account(handle: String, rig: String) -> void:
 	if player.handle == "":
 		player.handle = "anon_runner"
 	player.rig = rig
-	player.deck = CardsContent.starter_deck_for_rig(rig)
+	player.deck = CardsContentRes.starter_deck_for_rig(rig)
 	for card_id in player.deck:
 		player.collection[card_id] = int(player.collection.get(card_id, 0)) + 1
 	save_game("Account created")

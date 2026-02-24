@@ -3,9 +3,9 @@ extends Control
 signal request_back
 signal request_run
 
-const CardsContent = preload("res://scripts/content/cards.gd")
-const DeckSystem = preload("res://scripts/systems/deck_system.gd")
-const SynergySystem = preload("res://scripts/systems/synergy_system.gd")
+const CardsContentRes = preload("res://scripts/content/cards.gd")
+const DeckSystemRes = preload("res://scripts/systems/deck_system.gd")
+const SynergySystemRes = preload("res://scripts/systems/synergy_system.gd")
 
 @onready var collection_list: ItemList = $Root/CollectionCol/CollectionList
 @onready var deck_list: ItemList = $Root/DeckCol/DeckList
@@ -15,7 +15,7 @@ const SynergySystem = preload("res://scripts/systems/synergy_system.gd")
 var card_map := {}
 
 func _ready() -> void:
-	card_map = CardsContent.by_id_map()
+	card_map = CardsContentRes.by_id_map()
 	_refresh()
 
 func _refresh() -> void:
@@ -29,7 +29,7 @@ func _refresh() -> void:
 		var id = p.deck[i]
 		deck_list.add_item("%02d. %s" % [i + 1, card_map[id].name])
 		deck_list.set_item_metadata(i, i)
-	var syn := SynergySystem.analyze(p.deck)
+	var syn := SynergySystemRes.analyze(p.deck)
 	synergy_label.text = "Synergy:\n" + "\n".join(syn.notes)
 	if syn.notes.is_empty():
 		synergy_label.text += "\n(no active thresholds)"
@@ -40,7 +40,7 @@ func _on_add_pressed() -> void:
 		return
 	var idx := collection_list.get_selected_items()[0]
 	var card_id: String = collection_list.get_item_metadata(idx)
-	if DeckSystem.add_to_deck(GameState.save.player, card_id):
+	if DeckSystemRes.add_to_deck(GameState.save.player, card_id):
 		GameState.save_game("Deck updated")
 	_refresh()
 
@@ -48,7 +48,7 @@ func _on_remove_pressed() -> void:
 	if deck_list.get_selected_items().is_empty():
 		return
 	var idx := deck_list.get_selected_items()[0]
-	DeckSystem.remove_from_deck(GameState.save.player, idx)
+	DeckSystemRes.remove_from_deck(GameState.save.player, idx)
 	GameState.save_game("Deck updated")
 	_refresh()
 

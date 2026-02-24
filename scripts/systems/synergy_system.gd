@@ -1,10 +1,10 @@
 extends RefCounted
 class_name SynergySystem
 
-const CardsContent = preload("res://scripts/content/cards.gd")
+const CardsContentRes = preload("res://scripts/content/cards.gd")
 
 static func analyze(deck: Array) -> Dictionary:
-	var map := CardsContent.by_id_map()
+	var map := CardsContentRes.by_id_map()
 	var totals := {"DMG-RED":0,"DEF-BLUE":0,"HACK-PURPLE":0,"UTIL-GREEN":0}
 	for id in deck:
 		if map.has(id):

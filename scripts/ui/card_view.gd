@@ -1,7 +1,6 @@
 extends PanelContainer
 class_name CardView
 
-signal card_play_attempt(card_id: String)
 signal drag_released(card_id: String, global_pos: Vector2)
 
 @onready var title_label: Label = $VBox/Title
