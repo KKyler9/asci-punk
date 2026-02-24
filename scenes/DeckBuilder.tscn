@@ -1,0 +1,77 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/deck_builder.gd" id="1"]
+
+[node name="DeckBuilder" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Root" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+
+[node name="CollectionCol" type="VBoxContainer" parent="Root"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CollectionTitle" type="Label" parent="Root/CollectionCol"]
+layout_mode = 2
+text = "Collection"
+
+[node name="CollectionList" type="ItemList" parent="Root/CollectionCol"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Buttons" type="VBoxContainer" parent="Root"]
+layout_mode = 2
+
+[node name="Add" type="Button" parent="Root/Buttons"]
+layout_mode = 2
+text = "Add >>"
+
+[node name="Remove" type="Button" parent="Root/Buttons"]
+layout_mode = 2
+text = "<< Remove"
+
+[node name="StartRun" type="Button" parent="Root/Buttons"]
+layout_mode = 2
+text = "Start Run"
+
+[node name="Back" type="Button" parent="Root/Buttons"]
+layout_mode = 2
+text = "Back"
+
+[node name="DeckCol" type="VBoxContainer" parent="Root"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DeckTitle" type="Label" parent="Root/DeckCol"]
+layout_mode = 2
+text = "Deck"
+
+[node name="DeckList" type="ItemList" parent="Root/DeckCol"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InfoLabel" type="Label" parent="Root/DeckCol"]
+layout_mode = 2
+
+[node name="SynergyLabel" type="Label" parent="Root/DeckCol"]
+layout_mode = 2
+autowrap_mode = 2
+
+[connection signal="pressed" from="Root/Buttons/Add" to="." method="_on_add_pressed"]
+[connection signal="pressed" from="Root/Buttons/Remove" to="." method="_on_remove_pressed"]
+[connection signal="pressed" from="Root/Buttons/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Root/Buttons/StartRun" to="." method="_on_start_run_pressed"]
