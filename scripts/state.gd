@@ -58,7 +58,7 @@ func ensure_account(handle: String, rig: String) -> void:
 	save_game("Account created")
 
 func grant_xp(amount: int) -> void:
-	var p := save.player
+	var p: Dictionary = save.player
 	p.xp += amount
 	while p.xp >= p.next_xp:
 		p.xp -= p.next_xp
@@ -75,7 +75,7 @@ func grant_xp(amount: int) -> void:
 	save_game("XP updated")
 
 func apply_stat_choice(stat_key: String) -> void:
-	var p := save.player
+	var p: Dictionary = save.player
 	if p.pending_stat_points <= 0:
 		return
 	if p.stats.has(stat_key):
@@ -85,32 +85,32 @@ func apply_stat_choice(stat_key: String) -> void:
 	p.pending_stat_points -= 1
 	save_game("Stat upgraded")
 
-func choose_class(class_name: String) -> void:
-	var p := save.player
+func choose_class(chosen_class: String) -> void:
+	var p: Dictionary = save.player
 	if not p.pending_class_choice:
 		return
-	p.class = class_name
+	p.class = chosen_class
 	p.pending_class_choice = false
-	if class_name == "Cracker":
+	if chosen_class == "Cracker":
 		p.stats.magic += 2
-	elif class_name == "Bulwark":
+	elif chosen_class == "Bulwark":
 		p.stats.max_hp += 10
 		p.current_hp += 10
-	elif class_name == "Proxy":
+	elif chosen_class == "Proxy":
 		p.stats.intelligence += 2
 	save_game("Class chosen")
 
-func choose_perk(perk: String) -> void:
-	var p := save.player
+func choose_perk(chosen_perk: String) -> void:
+	var p: Dictionary = save.player
 	if p.pending_perk_choices <= 0:
 		return
-	if not p.perks.has(perk):
-		p.perks.append(perk)
-		if perk == "Deep Cache":
+	if not p.perks.has(chosen_perk):
+		p.perks.append(chosen_perk)
+		if chosen_perk == "Deep Cache":
 			p.cyber_capacity += 2
-		elif perk == "Adrenal Compiler":
+		elif chosen_perk == "Adrenal Compiler":
 			p.stats.attack += 1
-		elif perk == "Quantum Mind":
+		elif chosen_perk == "Quantum Mind":
 			p.stats.intelligence += 1
 		p.pending_perk_choices -= 1
 	save_game("Perk chosen")

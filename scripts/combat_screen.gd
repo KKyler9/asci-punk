@@ -47,7 +47,7 @@ func _get_enemy(id: String) -> Dictionary:
 func _refresh_ui() -> void:
 	enemy_label.text = enemy_frames[frame_idx]
 	enemy_stats.text = "%s HP: %d" % [battle.enemy.name, battle.enemy_hp]
-	var p := GameState.save.player
+	var p: Dictionary = GameState.save.player
 	player_stats.text = "HP %d/%d  Block %d  Mana %d" % [p.current_hp, p.stats.max_hp, battle.block, battle.mana]
 	combat_log.text = "\n".join(battle.log.slice(max(0, battle.log.size() - 8), battle.log.size()))
 	if hand.has_method("set_hand"):

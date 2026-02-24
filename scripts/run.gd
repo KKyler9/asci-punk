@@ -41,9 +41,9 @@ func _input(event: InputEvent) -> void:
 		_move(delta)
 
 func _move(delta: Vector2i) -> void:
-	var p := run_state.player_pos
-	var nx := p.x + delta.x
-	var ny := p.y + delta.y
+	var p: Dictionary = run_state.player_pos
+	var nx: int = int(p.x) + delta.x
+	var ny: int = int(p.y) + delta.y
 	if run_state.grid[ny][nx] == "#":
 		return
 	run_state.grid[p.y][p.x] = "."
@@ -80,7 +80,7 @@ func _show_card_reward() -> void:
 	log_label.text = "Treasure cache cracked: choose one card"
 
 func _pick_reward(card_id: String) -> void:
-	var p := GameState.save.player
+	var p: Dictionary = GameState.save.player
 	p.collection[card_id] = int(p.collection.get(card_id, 0)) + 1
 	if p.deck.size() < p.cyber_capacity:
 		p.deck.append(card_id)

@@ -21,7 +21,7 @@ func _ready() -> void:
 	_refresh()
 
 func _refresh() -> void:
-	var p := GameState.save.player
+	var p: Dictionary = GameState.save.player
 	var has_account := p.handle != ""
 	account_panel.visible = not has_account
 	main_panel.visible = has_account
@@ -63,12 +63,12 @@ func _on_stat_int_pressed() -> void:
 	GameState.apply_stat_choice("intelligence")
 	_refresh()
 
-func _on_class_pick_pressed(class_name: String) -> void:
-	GameState.choose_class(class_name)
+func _on_class_pick_pressed(chosen_class: String) -> void:
+	GameState.choose_class(chosen_class)
 	_refresh()
 
-func _on_perk_pick_pressed(perk_name: String) -> void:
-	GameState.choose_perk(perk_name)
+func _on_perk_pick_pressed(chosen_perk: String) -> void:
+	GameState.choose_perk(chosen_perk)
 	_refresh()
 
 func _on_crt_toggle_toggled(toggled_on: bool) -> void:

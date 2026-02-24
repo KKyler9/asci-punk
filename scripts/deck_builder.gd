@@ -19,7 +19,7 @@ func _ready() -> void:
 	_refresh()
 
 func _refresh() -> void:
-	var p := GameState.save.player
+	var p: Dictionary = GameState.save.player
 	collection_list.clear()
 	for id in p.collection.keys():
 		collection_list.add_item("%s x%d" % [card_map[id].name, p.collection[id]])

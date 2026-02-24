@@ -5,6 +5,7 @@ uniform float scan_strength = 0.06;
 uniform float noise_strength = 0.03;
 uniform float distortion_strength = 0.02;
 uniform float vignette_strength = 0.18;
+uniform sampler2D screen_tex : hint_screen_texture, filter_linear_mipmap;
 
 float rand(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
@@ -14,7 +15,7 @@ void fragment() {
     vec2 uv = UV;
     vec2 c = uv - 0.5;
     uv += c * dot(c, c) * distortion_strength;
-    vec4 src = texture(SCREEN_TEXTURE, uv);
+    vec4 src = texture(screen_tex, uv);
 
     float roll = smoothstep(0.0, 0.18, 0.18 - abs(fract(TIME * scan_speed) - uv.y));
     float scanline = sin(uv.y * 900.0) * 0.5 + 0.5;

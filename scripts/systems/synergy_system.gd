@@ -9,7 +9,7 @@ static func analyze(deck: Array) -> Dictionary:
 	for id in deck:
 		if map.has(id):
 			totals[map[id].cyber_type] += 1
-	var count := max(deck.size(), 1)
+	var count: int = max(deck.size(), 1)
 	var red_ratio: float = float(totals["DMG-RED"]) / count
 	var blue_ratio: float = float(totals["DEF-BLUE"]) / count
 	var mods := {

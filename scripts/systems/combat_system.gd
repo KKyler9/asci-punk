@@ -4,7 +4,7 @@ class_name CombatSystem
 const CardsContent = preload("res://scripts/content/cards.gd")
 
 static func start_battle(player: Dictionary, enemy: Dictionary, synergy: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
-	var draw := player.deck.duplicate()
+	var draw: Array = player.deck.duplicate()
 	draw.shuffle()
 	if player.get("rig","") == "Ghost":
 		draw.shuffle()
@@ -45,7 +45,7 @@ static func play_card(battle: Dictionary, player: Dictionary, card_id: String) -
 	var map := CardsContent.by_id_map()
 	if not map.has(card_id):
 		return "Unknown card"
-	var card := map[card_id]
+	var card: Dictionary = map[card_id]
 	if battle.mana < int(card.cost):
 		return "Not enough mana"
 	battle.mana -= int(card.cost)
@@ -64,7 +64,7 @@ static func _apply_effect(effect: Dictionary, battle: Dictionary, player: Dictio
 			var dmg := int((base + stat_val) * float(battle.synergy.damage_mult))
 			if battle.enemy_weak > 0:
 				dmg += 2
-			var blocked := min(dmg, int(battle.enemy_block))
+			var blocked: int = min(dmg, int(battle.enemy_block))
 			battle.enemy_block -= blocked
 			battle.enemy_hp -= max(0, dmg - blocked)
 		"block":
@@ -84,9 +84,9 @@ static func enemy_turn(battle: Dictionary, player: Dictionary) -> void:
 	if randi() % 5 == 0:
 		battle.enemy_block += 4
 		battle.log.append("Enemy fortified")
-	var blocked := min(dmg, int(battle.block))
+	var blocked: int = min(dmg, int(battle.block))
 	battle.block -= blocked
-	var taken := max(0, dmg - blocked)
+	var taken: int = max(0, dmg - blocked)
 	player.current_hp -= taken
 	battle.log.append("Enemy hit for %d" % taken)
 	battle.turn += 1

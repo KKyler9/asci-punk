@@ -30,16 +30,16 @@ func set_hand(ids: Array) -> void:
 	_layout_fan()
 
 func _layout_fan() -> void:
-	var n := get_child_count()
+	var n: int = get_child_count()
 	if n == 0:
 		return
-	var center := size.x * 0.5
-	var spread := min(40.0, 260.0 / max(1, n - 1))
+	var center: float = size.x * 0.5
+	var spread: float = min(40.0, 260.0 / float(max(1, n - 1)))
 	for i in n:
-		var card := get_child(i)
-		var offset := (i - (n - 1) / 2.0) * spread
-		var angle_deg := (i - (n - 1) / 2.0) * 6.0
-		var y_arc := abs(offset) * 0.12
+		var card: CardView = get_child(i) as CardView
+		var offset: float = (float(i) - (float(n - 1) / 2.0)) * spread
+		var angle_deg: float = (float(i) - (float(n - 1) / 2.0)) * 6.0
+		var y_arc: float = absf(offset) * 0.12
 		card.snap_to(Vector2(center + offset - 90, 10 + y_arc), deg_to_rad(angle_deg))
 
 func _on_card_drag_released(card_id: String, global_pos: Vector2) -> void:
