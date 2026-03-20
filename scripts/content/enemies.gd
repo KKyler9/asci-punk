@@ -1,27 +1,17 @@
 extends RefCounted
-class_name EnemiesContent
+class_name EnemyData
 
-static func all_enemies() -> Array[Dictionary]:
-	return [
-		{
-			"id":"sentinel",
-			"name":"Sentinel",
-			"max_hp":28,
-			"attack":6,
-			"frames":["  /\\\n [##]\n /__\\","  /\\\n [@@]\n /__\\"]
-		},
-		{
-			"id":"crawler",
-			"name":"Data Crawler",
-			"max_hp":24,
-			"attack":7,
-			"frames":[" _.._\n( oo)\n/|__|\\"," _.._\n( ** )\n/|__|\\"]
-		},
-		{
-			"id":"wraith",
-			"name":"Wraith ICE",
-			"max_hp":34,
-			"attack":8,
-			"frames":[" .--.\n(>< )\n '--'"," .--.\n( <> )\n '--'"]
-		}
-	]
+static func for_level(level: int) -> Dictionary:
+	var names := ["Scrap Drone", "Null Rat", "Firewall Wisp", "Rust Golem", "Proxy Fang"]
+	var idx := randi() % names.size()
+	var scale := 1.0 + float(level - 1) * 0.18
+	return {
+		"name": names[idx],
+		"hp": int(24 * scale + randi_range(0, 8)),
+		"attack": int(4 * scale + randi_range(0, 3)),
+		"defense": int(2 * scale + randi_range(0, 2)),
+		"speed": int(3 * scale + randi_range(0, 3)),
+		"tech": int(2 * scale + randi_range(0, 3)),
+		"xp": int(16 * scale),
+		"credits": int(12 * scale)
+	}
