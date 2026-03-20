@@ -1,33 +1,39 @@
 extends RefCounted
 class_name ExplorationSystem
 
-static func generate_map(width: int, height: int, rng: RandomNumberGenerator) -> Array:
-	var grid := []
-	for y in height:
+const WIDTH := 20
+const HEIGHT := 12
+
+static func create_run(level: int) -> Dictionary:
+	var tiles := []
+	for y in HEIGHT:
 		var row := []
-		for x in width:
-			var c := "."
-			if x == 0 or y == 0 or x == width - 1 or y == height - 1:
-				c = "#"
-			row.append(c)
-		grid.append(row)
-	_place(grid, width, height, rng, "E", 7)
-	_place(grid, width, height, rng, "T", 5)
-	_place(grid, width, height, rng, "X", 1)
-	grid[1][1] = "P"
-	return grid
+		for x in WIDTH:
+			row.append(".")
+		tiles.append(row)
+	var run := {
+		"width": WIDTH,
+		"height": HEIGHT,
+		"tiles": tiles,
+		"player": Vector2i(0, 0),
+		"exit": Vector2i(WIDTH - 1, HEIGHT - 1),
+		"enemies": [],
+		"loot": [],
+		"events": [],
+		"visited": {},
+		"rewards": {"xp": 0, "credits": 0, "materials": 0}
+	}
+	for i in 6:
+		run.enemies.append(Vector2i(randi_range(2, WIDTH - 2), randi_range(1, HEIGHT - 2)))
+	for i in 5:
+		run.loot.append(Vector2i(randi_range(1, WIDTH - 2), randi_range(1, HEIGHT - 2)))
+	for i in 4:
+		run.events.append(Vector2i(randi_range(1, WIDTH - 2), randi_range(1, HEIGHT - 2)))
+	return run
 
-static func _place(grid: Array, w: int, h: int, rng: RandomNumberGenerator, ch: String, count: int) -> void:
-	var placed := 0
-	while placed < count:
-		var x := rng.randi_range(1, w - 2)
-		var y := rng.randi_range(1, h - 2)
-		if grid[y][x] == ".":
-			grid[y][x] = ch
-			placed += 1
-
-static func map_to_text(grid: Array) -> String:
-	var lines := PackedStringArray()
-	for row in grid:
-		lines.append("".join(row))
-	return "\n".join(lines)
+static func move_player(run: Dictionary, dir: Vector2i) -> void:
+	var p: Vector2i = run.player
+	p += dir
+	p.x = clampi(p.x, 0, run.width - 1)
+	p.y = clampi(p.y, 0, run.height - 1)
+	run.player = p
