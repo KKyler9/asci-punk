@@ -6,8 +6,9 @@ const SAVE_PATH := "user://save.json"
 static func save_data(data: Dictionary) -> void:
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file == null:
+		push_error("Failed to save game.")
 		return
-	file.store_string(JSON.stringify(data, "\t"))
+	file.store_string(JSON.stringify(data))
 
 static func load_data() -> Dictionary:
 	if not FileAccess.file_exists(SAVE_PATH):
@@ -15,7 +16,7 @@ static func load_data() -> Dictionary:
 	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
 	if file == null:
 		return {}
-	var parsed: Variant = JSON.parse_string(file.get_as_text())
-	if typeof(parsed) != TYPE_DICTIONARY:
-		return {}
-	return parsed
+	var parsed := JSON.parse_string(file.get_as_text())
+	if parsed is Dictionary:
+		return parsed
+	return {}

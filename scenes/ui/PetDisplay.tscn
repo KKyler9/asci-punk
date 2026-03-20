@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://petdisplaynew"]
+
+[ext_resource type="Script" path="res://scripts/ui/pet_display.gd" id="1"]
+
+[node name="PetDisplay" type="Control"]
+custom_minimum_size = Vector2(180, 180)
+script = ExtResource("1")
+
+[node name="Body" type="ColorRect" parent="."]
+offset_left = 52.0
+offset_top = 58.0
+offset_right = 128.0
+offset_bottom = 134.0
+color = Color(1, 0.42, 0.42, 1)
+
+[node name="EyeL" type="ColorRect" parent="."]
+offset_left = 72.0
+offset_top = 82.0
+offset_right = 82.0
+offset_bottom = 92.0
+color = Color(0, 0, 0, 1)
+
+[node name="EyeR" type="ColorRect" parent="."]
+offset_left = 97.0
+offset_top = 82.0
+offset_right = 107.0
+offset_bottom = 92.0
+color = Color(0, 0, 0, 1)
