@@ -95,7 +95,7 @@ func tick_background() -> void:
 		save.week.index += 1
 
 func get_meta_multiplier(key: String) -> float:
-	var up := save.meta_upgrades.get(key, null)
+	var up = save.meta_upgrades.get(key, null)
 	if up == null:
 		return 0.0
 	return up.level * up.per_level
