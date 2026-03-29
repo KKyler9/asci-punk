@@ -101,7 +101,7 @@ func get_meta_multiplier(key: String) -> float:
 	return up.level * up.per_level
 
 func get_pet_stats() -> Dictionary:
-	var stats := save.pet.base_stats.duplicate(true)
+	var stats = save.pet.base_stats.duplicate(true)
 	for k in save.pet.bonus_stats.keys():
 		stats[k] += int(save.pet.bonus_stats[k])
 	stats.hp += int(get_meta_multiplier("base_hp"))
