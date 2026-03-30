@@ -107,7 +107,7 @@ func get_pet_stats() -> Dictionary:
 	stats.hp += int(get_meta_multiplier("base_hp"))
 	stats.attack += int(get_meta_multiplier("base_attack"))
 	for slot in save.equipped_gear.keys():
-		var item_id := save.equipped_gear[slot]
+		var item_id: String = str(save.equipped_gear[slot])
 		if item_id != "":
 			var item := GEAR.all()[item_id]
 			for s in item.stats.keys():
