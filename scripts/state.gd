@@ -109,7 +109,7 @@ func get_pet_stats() -> Dictionary:
 	for slot in save.equipped_gear.keys():
 		var item_id: String = str(save.equipped_gear[slot])
 		if item_id != "":
-			var item := GEAR.all()[item_id]
+			var item: Dictionary = GEAR.all()[item_id]
 			for s in item.stats.keys():
 				stats[s] += item.stats[s]
 	for implant_id in save.installed_implants:
