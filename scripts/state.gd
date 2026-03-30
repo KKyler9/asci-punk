@@ -128,7 +128,7 @@ func add_xp(amount: int) -> void:
 	emit_signal("data_changed")
 
 func start_training(kind: String) -> void:
-	var base := TRAIN_SYS.durations().get(kind, 30)
+	var base: float = float(TRAIN_SYS.durations().get(kind, 30))
 	var mult := 1.0 - get_meta_multiplier("training_speed")
 	save.training = {
 		"active": true,
@@ -159,7 +159,7 @@ func collect_training() -> void:
 	emit_signal("data_changed")
 
 func start_activity(kind: String) -> void:
-	var base := ACT_SYS.durations().get(kind, 40)
+	var base: float = float(ACT_SYS.durations().get(kind, 40))
 	save.activity = {"active": true, "kind": kind, "end_time": Time.get_unix_time_from_system() + base}
 	save_game()
 	emit_signal("data_changed")
@@ -215,13 +215,13 @@ func do_prestige() -> void:
 	emit_signal("data_changed")
 
 func upgrade_cost(key: String) -> int:
-	var up := save.meta_upgrades[key]
+	var up: Dictionary = save.meta_upgrades[key]
 	return up.base_cost + up.level * up.cost_scale
 
 func buy_meta_upgrade(key: String) -> bool:
 	if not save.meta_upgrades.has(key):
 		return false
-	var up := save.meta_upgrades[key]
+	var up: Dictionary = save.meta_upgrades[key]
 	if up.level >= up.max:
 		return false
 	var cost := upgrade_cost(key)
