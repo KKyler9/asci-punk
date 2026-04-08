@@ -64,8 +64,8 @@ func create_new_profile(player_name: String, starter_id: String) -> void:
 	emit_signal("data_changed")
 
 func _grant_starter_items() -> void:
-	var gear_ids := GEAR.all().keys()
-	var implant_ids := IMPLANTS.all().keys()
+	var gear_ids: Array = GEAR.all().keys()
+	var implant_ids: Array = IMPLANTS.all().keys()
 	save.inventory.gear.append(gear_ids[0])
 	save.inventory.gear.append(gear_ids[1])
 	save.inventory.implants.append(implant_ids[0])
@@ -77,7 +77,7 @@ func load_game() -> void:
 	tick_background()
 	emit_signal("data_changed")
 
-func save_game() -> void:
+func save_game(_reason: String = "") -> void:
 	PERSIST.save_data(save)
 
 func request_scene(name: String) -> void:
@@ -86,7 +86,7 @@ func request_scene(name: String) -> void:
 func tick_background() -> void:
 	if not save.get("initialized", false):
 		return
-	var now := Time.get_unix_time_from_system()
+	var now: float = Time.get_unix_time_from_system()
 	if save.training.active and now >= float(save.training.end_time):
 		collect_training()
 	if save.activity.active and now >= float(save.activity.end_time):
@@ -95,13 +95,13 @@ func tick_background() -> void:
 		save.week.index += 1
 
 func get_meta_multiplier(key: String) -> float:
-	var up = save.meta_upgrades.get(key, null)
+	var up: Variant = save.meta_upgrades.get(key, null)
 	if up == null:
 		return 0.0
 	return up.level * up.per_level
 
 func get_pet_stats() -> Dictionary:
-	var stats = save.pet.base_stats.duplicate(true)
+	var stats: Dictionary = save.pet.base_stats.duplicate(true)
 	for k in save.pet.bonus_stats.keys():
 		stats[k] += int(save.pet.bonus_stats[k])
 	stats.hp += int(get_meta_multiplier("base_hp"))
@@ -129,7 +129,7 @@ func add_xp(amount: int) -> void:
 
 func start_training(kind: String) -> void:
 	var base: float = float(TRAIN_SYS.durations().get(kind, 30))
-	var mult := 1.0 - get_meta_multiplier("training_speed")
+	var mult: float = 1.0 - get_meta_multiplier("training_speed")
 	save.training = {
 		"active": true,
 		"kind": kind,
@@ -150,7 +150,7 @@ func apply_training_minigame(quality: float) -> void:
 func collect_training() -> void:
 	if not save.training.active:
 		return
-	var reward := TRAIN_SYS.reward_for(save.training.kind, float(save.training.quality), save.pet.level)
+	var reward: Dictionary = TRAIN_SYS.reward_for(save.training.kind, float(save.training.quality), save.pet.level)
 	for k in reward.keys():
 		save.pet.bonus_stats[k] += reward[k]
 	save.pet.mood = clampi(save.pet.mood + 4, 0, 100)
@@ -167,16 +167,16 @@ func start_activity(kind: String) -> void:
 func collect_activity() -> void:
 	if not save.activity.active:
 		return
-	var bonus := 1.0 + get_meta_multiplier("activity_reward")
-	var reward := ACT_SYS.reward_for(save.activity.kind, bonus)
+	var bonus: float = 1.0 + get_meta_multiplier("activity_reward")
+	var reward: Dictionary = ACT_SYS.reward_for(save.activity.kind, bonus)
 	if save.activity.kind == "scavenge":
 		save.inventory.credits += reward.credits
 		save.inventory.materials += reward.materials
 		if reward.gear_drop:
-			var g := GEAR.all().keys()
+			var g: Array = GEAR.all().keys()
 			save.inventory.gear.append(g[randi() % g.size()])
 		if reward.implant_drop:
-			var i := IMPLANTS.all().keys()
+			var i: Array = IMPLANTS.all().keys()
 			save.inventory.implants.append(i[randi() % i.size()])
 	else:
 		save.pet.energy_current = mini(get_pet_stats().energy, save.pet.energy_current + reward.energy)
@@ -199,11 +199,11 @@ func can_prestige() -> bool:
 func do_prestige() -> void:
 	if not can_prestige():
 		return
-	var stats := get_pet_stats()
-	var total := 0
+	var stats: Dictionary = get_pet_stats()
+	var total: int = 0
 	for v in stats.values():
 		total += int(v)
-	var fragments := int(floor(save.pet.level / 5.0) + floor(total / 60.0))
+	var fragments: int = int(floor(save.pet.level / 5.0) + floor(total / 60.0))
 	save.core_fragments += maxi(1, fragments)
 	save.prestige_count += 1
 	save.pet.level = 1
@@ -224,7 +224,7 @@ func buy_meta_upgrade(key: String) -> bool:
 	var up: Dictionary = save.meta_upgrades[key]
 	if up.level >= up.max:
 		return false
-	var cost := upgrade_cost(key)
+	var cost: int = upgrade_cost(key)
 	if save.core_fragments < cost:
 		return false
 	save.core_fragments -= cost

@@ -9,10 +9,10 @@ signal drag_released(card_id: String, global_pos: Vector2)
 @onready var desc_label: Label = $VBox/Desc
 @onready var art_label: RichTextLabel = $VBox/Art
 
-var card_id := ""
-var dragging := false
-var drag_offset := Vector2.ZERO
-var start_pos := Vector2.ZERO
+var card_id: String = ""
+var dragging: bool = false
+var drag_offset: Vector2 = Vector2.ZERO
+var start_pos: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	mouse_entered.connect(_mouse_entered)
@@ -50,6 +50,6 @@ func _mouse_exited() -> void:
 	modulate = Color(1, 1, 1)
 
 func snap_to(target_pos: Vector2, rot: float) -> void:
-	var tw := create_tween()
+	var tw: Tween = create_tween()
 	tw.tween_property(self, "position", target_pos, 0.15)
 	tw.parallel().tween_property(self, "rotation", rot, 0.15)

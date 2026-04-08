@@ -1,39 +1,172 @@
 extends RefCounted
 class_name ExplorationSystem
 
-const WIDTH := 20
-const HEIGHT := 12
+const WIDTH := 28
+const HEIGHT := 16
+const LIGHT_RADIUS := 2
 
 static func create_run(level: int) -> Dictionary:
-	var tiles := []
-	for y in HEIGHT:
-		var row := []
-		for x in WIDTH:
-			row.append(".")
-		tiles.append(row)
-	var run := {
+	var tiles: Array = _generate_tiles(level)
+	var run: Dictionary = {
 		"width": WIDTH,
 		"height": HEIGHT,
 		"tiles": tiles,
-		"player": Vector2i(0, 0),
-		"exit": Vector2i(WIDTH - 1, HEIGHT - 1),
+		"player": Vector2i(1, 1),
+		"exit": Vector2i(WIDTH - 2, HEIGHT - 2),
 		"enemies": [],
 		"loot": [],
 		"events": [],
 		"visited": {},
+		"light_radius": LIGHT_RADIUS,
 		"rewards": {"xp": 0, "credits": 0, "materials": 0}
 	}
-	for i in 6:
-		run.enemies.append(Vector2i(randi_range(2, WIDTH - 2), randi_range(1, HEIGHT - 2)))
-	for i in 5:
-		run.loot.append(Vector2i(randi_range(1, WIDTH - 2), randi_range(1, HEIGHT - 2)))
-	for i in 4:
-		run.events.append(Vector2i(randi_range(1, WIDTH - 2), randi_range(1, HEIGHT - 2)))
+
+	run.tiles[run.player.y][run.player.x] = "."
+	run.tiles[run.exit.y][run.exit.x] = "."
+	_reveal_around(run)
+	_place_encounters(run, level)
 	return run
 
-static func move_player(run: Dictionary, dir: Vector2i) -> void:
-	var p: Vector2i = run.player
-	p += dir
-	p.x = clampi(p.x, 0, run.width - 1)
-	p.y = clampi(p.y, 0, run.height - 1)
-	run.player = p
+static func move_player(run: Dictionary, dir: Vector2i) -> bool:
+	var next: Vector2i = run.player + dir
+	next.x = clampi(next.x, 0, run.width - 1)
+	next.y = clampi(next.y, 0, run.height - 1)
+	if next == run.player:
+		return false
+	if not _is_walkable(str(run.tiles[next.y][next.x])):
+		return false
+	run.player = next
+	_reveal_around(run)
+	return true
+
+static func _generate_tiles(level: int) -> Array:
+	var tiles: Array = []
+	for y in HEIGHT:
+		var row: Array = []
+		for x in WIDTH:
+			if x == 0 or y == 0 or x == WIDTH - 1 or y == HEIGHT - 1:
+				row.append("#")
+			elif randf() < 0.37:
+				row.append("#")
+			else:
+				row.append(_pick_terrain())
+		tiles.append(row)
+
+	var cursor: Vector2i = Vector2i(1, 1)
+	while cursor.x < WIDTH - 2 or cursor.y < HEIGHT - 2:
+		tiles[cursor.y][cursor.x] = "."
+		if cursor.x < WIDTH - 2 and (cursor.y >= HEIGHT - 2 or randf() < 0.58):
+			cursor.x += 1
+		elif cursor.y < HEIGHT - 2:
+			cursor.y += 1
+		tiles[cursor.y][cursor.x] = "."
+
+	var extra_carves: int = 42 + level * 2
+	for _i in extra_carves:
+		var p: Vector2i = Vector2i(randi_range(1, WIDTH - 2), randi_range(1, HEIGHT - 2))
+		var steps: int = randi_range(4, 12)
+		for _s in steps:
+			tiles[p.y][p.x] = _pick_terrain()
+			var dirs: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
+			var dir: Vector2i = dirs[randi() % dirs.size()]
+			p += dir
+			p.x = clampi(p.x, 1, WIDTH - 2)
+			p.y = clampi(p.y, 1, HEIGHT - 2)
+
+	return tiles
+
+static func _place_encounters(run: Dictionary, level: int) -> void:
+	var floor_cells: Array[Vector2i] = []
+	for y in run.height:
+		for x in run.width:
+			var pos: Vector2i = Vector2i(x, y)
+			if pos == run.player or pos == run.exit:
+				continue
+			if _is_walkable(str(run.tiles[y][x])):
+				floor_cells.append(pos)
+
+	if floor_cells.is_empty():
+		return
+
+	var used: Dictionary = {}
+	var enemy_count: int = mini(floor_cells.size() / 5, 7 + level / 3)
+	var loot_count: int = mini(floor_cells.size() / 7, 5 + level / 4)
+	var event_count: int = mini(floor_cells.size() / 8, 4 + level / 5)
+
+	for _i in enemy_count:
+		var enemy_pos: Vector2i = _unique_pick(floor_cells, used)
+		if enemy_pos != Vector2i(-1, -1):
+			run.enemies.append(enemy_pos)
+	for _i in loot_count:
+		var loot_pos: Vector2i = _unique_pick(floor_cells, used)
+		if loot_pos != Vector2i(-1, -1):
+			run.loot.append(loot_pos)
+	for _i in event_count:
+		var event_pos: Vector2i = _unique_pick(floor_cells, used)
+		if event_pos != Vector2i(-1, -1):
+			run.events.append(event_pos)
+
+static func _unique_pick(pool: Array[Vector2i], used: Dictionary) -> Vector2i:
+	if pool.is_empty():
+		return Vector2i(-1, -1)
+	for _i in 32:
+		var pos: Vector2i = pool[randi() % pool.size()]
+		if not used.has(pos):
+			used[pos] = true
+			return pos
+	return Vector2i(-1, -1)
+
+static func _reveal_around(run: Dictionary) -> void:
+	var radius: int = int(run.get("light_radius", LIGHT_RADIUS))
+	for dy in range(-radius, radius + 1):
+		for dx in range(-radius, radius + 1):
+			if abs(dx) + abs(dy) > radius + 1:
+				continue
+			var pos: Vector2i = Vector2i(run.player.x + dx, run.player.y + dy)
+			if pos.x < 0 or pos.y < 0 or pos.x >= run.width or pos.y >= run.height:
+				continue
+			run.visited[pos] = true
+
+static func _is_walkable(tile: String) -> bool:
+	return tile != "#"
+
+static func _pick_terrain() -> String:
+	var roll: float = randf()
+	if roll < 0.55:
+		return "."
+	if roll < 0.8:
+		return ","
+	return ";"
+
+# Legacy API support for older run scene scripts.
+static func generate_map(width: int, height: int, _rng: RandomNumberGenerator) -> Array:
+	var run: Dictionary = create_run(1)
+	var grid: Array = []
+	var max_h: int = mini(height, int(run.height))
+	var max_w: int = mini(width, int(run.width))
+	for y in max_h:
+		var row: Array = []
+		for x in max_w:
+			var pos: Vector2i = Vector2i(x, y)
+			if pos == run.player:
+				row.append("P")
+			elif pos == run.exit:
+				row.append("X")
+			elif run.enemies.has(pos):
+				row.append("E")
+			elif run.loot.has(pos) or run.events.has(pos):
+				row.append("T")
+			else:
+				row.append(str(run.tiles[y][x]))
+		grid.append(row)
+	return grid
+
+static func map_to_text(grid: Array) -> String:
+	var lines: PackedStringArray = []
+	for row_variant: Variant in grid:
+		var row: Array = row_variant
+		var line: String = ""
+		for tile_variant: Variant in row:
+			line += str(tile_variant)
+		lines.append(line)
+	return "\n".join(lines)

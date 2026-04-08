@@ -16,7 +16,7 @@ const SCENES := {
 @onready var starters_box: HBoxContainer = $SetupPanel/VBoxContainer/StarterButtons
 
 var current_view: Control
-var starter_id := "aggressive"
+var starter_id: String = "aggressive"
 
 func _ready() -> void:
 	GameState.scene_requested.connect(_on_scene_requested)
@@ -34,13 +34,13 @@ func _build_starters() -> void:
 	for c in starters_box.get_children():
 		c.queue_free()
 	for starter in preload("res://scripts/content/pets.gd").starters():
-		var b := Button.new()
+		var b: Button = Button.new()
 		b.text = starter.name
 		b.pressed.connect(func() -> void: starter_id = starter.id)
 		starters_box.add_child(b)
 
 func _on_start_pressed() -> void:
-	var pname := name_edit.text.strip_edges()
+	var pname: String = name_edit.text.strip_edges()
 	if pname == "":
 		pname = "Operator"
 	GameState.create_new_profile(pname, starter_id)
@@ -59,7 +59,7 @@ func _on_scene_requested(name: String) -> void:
 
 func _on_combat_requested(enemy: Dictionary) -> void:
 	_open_view("explore")
-	var ex = current_view
+	var ex: Control = current_view
 	if ex.has_method("open_combat"):
 		ex.open_combat(enemy)
 

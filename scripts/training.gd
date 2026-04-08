@@ -5,8 +5,8 @@ extends Control
 @onready var marker: ColorRect = $MarginContainer/VBoxContainer/Minigame/Track/Marker
 @onready var zone: ColorRect = $MarginContainer/VBoxContainer/Minigame/Track/Zone
 
-var marker_t := 0.0
-var marker_dir := 1.0
+var marker_t: float = 0.0
+var marker_dir: float = 1.0
 
 func _ready() -> void:
 	GameState.data_changed.connect(refresh)
@@ -27,7 +27,7 @@ func _process(delta: float) -> void:
 		timer_label.text = "Time left: %.1fs" % maxf(0.0, GameState.save.training.end_time - Time.get_unix_time_from_system())
 
 func refresh() -> void:
-	var t = GameState.save.training
+	var t: Dictionary = GameState.save.training
 	if t.active:
 		status_label.text = "Training active: %s" % t.kind
 	else:
@@ -39,10 +39,10 @@ func _on_tech_pressed() -> void: GameState.start_training("tech")
 func _on_collect_pressed() -> void: GameState.collect_training()
 
 func _on_tap_pressed() -> void:
-	var mark_x := marker.position.x
-	var zone_center := zone.position.x + zone.size.x * 0.5
-	var d := absf(mark_x - zone_center)
-	var quality := clampf(1.0 - (d / 80.0), 0.0, 1.0)
+	var mark_x: float = marker.position.x
+	var zone_center: float = zone.position.x + zone.size.x * 0.5
+	var d: float = absf(mark_x - zone_center)
+	var quality: float = clampf(1.0 - (d / 80.0), 0.0, 1.0)
 	GameState.apply_training_minigame(quality)
 
 func _on_back_pressed() -> void:

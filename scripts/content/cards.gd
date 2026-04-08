@@ -31,7 +31,7 @@ static func starter_deck_for_rig(rig: String) -> Array[String]:
 	return base
 
 static func by_id_map() -> Dictionary:
-	var out := {}
+	var out: Dictionary = {}
 	for c in all_cards():
 		out[c.id] = c
 	return out
