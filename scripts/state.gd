@@ -72,10 +72,26 @@ func _grant_starter_items() -> void:
 
 func load_game() -> void:
 	save = PERSIST.load_data()
+	var defaults: Dictionary = default_save()
 	if save.is_empty():
-		save = default_save()
+		save = defaults
+	else:
+		save = _merge_defaults(save, defaults)
 	tick_background()
 	emit_signal("data_changed")
+
+func _merge_defaults(current: Dictionary, defaults: Dictionary) -> Dictionary:
+	var merged: Dictionary = defaults.duplicate(true)
+	for key_variant: Variant in current.keys():
+		var key: String = str(key_variant)
+		if not defaults.has(key):
+			merged[key] = current[key]
+			continue
+		if current[key] is Dictionary and defaults[key] is Dictionary:
+			merged[key] = _merge_defaults(current[key], defaults[key])
+		else:
+			merged[key] = current[key]
+	return merged
 
 func save_game(_reason: String = "") -> void:
 	PERSIST.save_data(save)

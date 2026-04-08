@@ -22,7 +22,7 @@ func _ready() -> void:
 	GameState.scene_requested.connect(_on_scene_requested)
 	GameState.combat_requested.connect(_on_combat_requested)
 	_build_starters()
-	if GameState.save.initialized:
+	if bool(GameState.save.get("initialized", false)):
 		setup_panel.hide()
 		_open_view("home")
 	else:
@@ -67,4 +67,5 @@ func _on_back_home_pressed() -> void:
 	_open_view("home")
 
 func _apply_settings() -> void:
-	crt_overlay.visible = GameState.save.settings.crt_enabled
+	var settings: Dictionary = GameState.save.get("settings", {})
+	crt_overlay.visible = bool(settings.get("crt_enabled", true))
