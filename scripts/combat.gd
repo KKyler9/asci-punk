@@ -10,8 +10,8 @@ const COMBAT_SYS = preload("res://scripts/systems/combat_system.gd")
 
 var pet_stats: Dictionary
 var enemy: Dictionary
-var temp_def := 0
-var buff_attack := 0
+var temp_def: int = 0
+var buff_attack: int = 0
 
 func setup_battle(enemy_data: Dictionary) -> void:
 	enemy = enemy_data.duplicate(true)
@@ -34,7 +34,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_on_ability_pressed()
 
 func _on_attack_pressed() -> void:
-	var dmg := COMBAT_SYS.damage(pet_stats.attack + buff_attack, enemy.defense)
+	var dmg: int = COMBAT_SYS.damage(pet_stats.attack + buff_attack, enemy.defense)
 	enemy_hp.value -= dmg
 	_log("You hit for %d" % dmg)
 	_check_end_or_enemy_turn()
@@ -48,15 +48,15 @@ func _on_ability_pressed() -> void:
 	if GameState.save.installed_implants.is_empty():
 		_log("No implant ability equipped")
 		return
-	var id := GameState.save.installed_implants[0]
-	var impl = preload("res://scripts/content/implant_data.gd").all()[id]
+	var id: String = str(GameState.save.installed_implants[0])
+	var impl: Dictionary = preload("res://scripts/content/implant_data.gd").all()[id]
 	if GameState.save.pet.energy_current < impl.energy_cost:
 		_log("Insufficient energy")
 		return
 	GameState.save.pet.energy_current -= impl.energy_cost
 	match id:
 		"shock_pulse":
-			var dmg := COMBAT_SYS.damage(pet_stats.tech + 6, enemy.defense, 1)
+			var dmg: int = COMBAT_SYS.damage(pet_stats.tech + 6, enemy.defense, 1)
 			enemy_hp.value -= dmg
 			_log("Shock Pulse %d" % dmg)
 		"reactive_shield":
@@ -71,7 +71,7 @@ func _on_ability_pressed() -> void:
 	_check_end_or_enemy_turn()
 
 func enemy_turn() -> void:
-	var dmg := COMBAT_SYS.damage(enemy.attack, pet_stats.defense + temp_def)
+	var dmg: int = COMBAT_SYS.damage(enemy.attack, pet_stats.defense + temp_def)
 	temp_def = 0
 	player_hp.value -= dmg
 	_log("%s hits for %d" % [enemy.name, dmg])

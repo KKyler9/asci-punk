@@ -4,15 +4,15 @@ class_name SynergySystem
 const CardsContentRes = preload("res://scripts/content/cards.gd")
 
 static func analyze(deck: Array) -> Dictionary:
-	var map := CardsContentRes.by_id_map()
-	var totals := {"DMG-RED":0,"DEF-BLUE":0,"HACK-PURPLE":0,"UTIL-GREEN":0}
+	var map: Dictionary = CardsContentRes.by_id_map()
+	var totals: Dictionary = {"DMG-RED":0,"DEF-BLUE":0,"HACK-PURPLE":0,"UTIL-GREEN":0}
 	for id in deck:
 		if map.has(id):
 			totals[map[id].cyber_type] += 1
 	var count: int = max(deck.size(), 1)
 	var red_ratio: float = float(totals["DMG-RED"]) / count
 	var blue_ratio: float = float(totals["DEF-BLUE"]) / count
-	var mods := {
+	var mods: Dictionary = {
 		"damage_mult":1.0,
 		"block_mult":1.0,
 		"mana_bonus":0,

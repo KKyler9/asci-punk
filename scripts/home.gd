@@ -1,6 +1,6 @@
 extends Control
 
-@onready var pet_display = $MarginContainer/VBoxContainer/TopRow/PetDisplay
+@onready var pet_display: Control = $MarginContainer/VBoxContainer/TopRow/PetDisplay
 @onready var stats_label: Label = $MarginContainer/VBoxContainer/TopRow/StatsPanel/StatsLabel
 @onready var progress: ProgressBar = $MarginContainer/VBoxContainer/TopRow/StatsPanel/XPBar
 @onready var mood_bar: ProgressBar = $MarginContainer/VBoxContainer/TopRow/StatsPanel/MoodBar
@@ -16,8 +16,8 @@ func _ready() -> void:
 func refresh() -> void:
 	if not GameState.save.initialized:
 		return
-	var stats := GameState.get_pet_stats()
-	var pet := GameState.save.pet
+	var stats: Dictionary = GameState.get_pet_stats()
+	var pet: Dictionary = GameState.save.pet
 	pet_display.call("set_pet", pet)
 	stats_label.text = "Lv.%d %s\nHP %d  ATK %d  DEF %d\nSPD %d  TECH %d  EN %d  LUCK %d\nCredits: %d  Materials: %d" % [
 		pet.level, pet.name, stats.hp, stats.attack, stats.defense, stats.speed, stats.tech, stats.energy, stats.luck, GameState.save.inventory.credits, GameState.save.inventory.materials
@@ -32,8 +32,8 @@ func refresh() -> void:
 	for c in upgrades_box.get_children():
 		c.queue_free()
 	for key in GameState.save.meta_upgrades.keys():
-		var up = GameState.save.meta_upgrades[key]
-		var btn := Button.new()
+		var up: Dictionary = GameState.save.meta_upgrades[key]
+		var btn: Button = Button.new()
 		btn.text = "%s Lv%d/%d (Cost %d)" % [up.name, up.level, up.max, GameState.upgrade_cost(key)]
 		btn.disabled = up.level >= up.max
 		btn.pressed.connect(func() -> void: GameState.buy_meta_upgrade(key))

@@ -27,12 +27,14 @@ func _unhandled_input(event: InputEvent) -> void:
 func move(dir: Vector2i) -> void:
 	if GameState.current_run.is_empty():
 		return
-	EXP_SYS.move_player(GameState.current_run, dir)
+	if not EXP_SYS.move_player(GameState.current_run, dir):
+		info_label.text = "Blocked path (#). Find an opening."
+		return
 	resolve_tile()
 	refresh_map()
 
 func resolve_tile() -> void:
-	var run = GameState.current_run
+	var run: Dictionary = GameState.current_run
 	var p: Vector2i = run.player
 	if p == run.exit:
 		GameState.add_xp(run.rewards.xp + 20)
@@ -50,7 +52,7 @@ func resolve_tile() -> void:
 		run.rewards.credits += randi_range(8, 22)
 		run.rewards.materials += randi_range(3, 8)
 		if randf() < 0.25:
-			var gear_ids = preload("res://scripts/content/gear_data.gd").all().keys()
+			var gear_ids: Array = preload("res://scripts/content/gear_data.gd").all().keys()
 			GameState.save.inventory.gear.append(gear_ids[randi() % gear_ids.size()])
 		info_label.text = "Crate opened: loot acquired"
 	elif run.events.has(p):
@@ -61,15 +63,20 @@ func resolve_tile() -> void:
 		info_label.text = "Event node: data cache synced"
 
 func refresh_map() -> void:
-	var run = GameState.current_run
+	var run: Dictionary = GameState.current_run
 	if run.is_empty():
 		map_label.text = "No run active"
 		return
-	var lines := []
+	var lines: Array[String] = []
 	for y in run.height:
-		var row := ""
+		var row: String = ""
 		for x in run.width:
-			var pos := Vector2i(x, y)
+			var pos: Vector2i = Vector2i(x, y)
+			var discovered: bool = bool(run.visited.has(pos))
+			var in_light: bool = abs(pos.x - run.player.x) + abs(pos.y - run.player.y) <= int(run.get("light_radius", 2)) + 1
+			if not discovered and not in_light:
+				row += " "
+				continue
 			if pos == run.player:
 				row += "@"
 			elif pos == run.exit:
@@ -81,14 +88,15 @@ func refresh_map() -> void:
 			elif run.events.has(pos):
 				row += "?"
 			else:
-				row += "."
+				row += run.tiles[y][x]
 		lines.append(row)
 	map_label.text = "\n".join(lines)
-	info_label.text = "Move with WASD/Arrows. Rewards XP:%d C:%d M:%d" % [run.rewards.xp, run.rewards.credits, run.rewards.materials]
+	if not info_label.text.begins_with("Blocked") and not info_label.text.begins_with("Enemy") and not info_label.text.begins_with("Crate") and not info_label.text.begins_with("Event"):
+		info_label.text = "WASD/Arrows | @ You E Exit M Enemy $ Loot ? Event # Wall | XP:%d C:%d M:%d" % [run.rewards.xp, run.rewards.credits, run.rewards.materials]
 
 func open_combat(enemy: Dictionary) -> void:
 	combat_layer.visible = true
-	var combat_scene := preload("res://scenes/Combat.tscn").instantiate()
+	var combat_scene: Control = preload("res://scenes/Combat.tscn").instantiate()
 	combat_layer.add_child(combat_scene)
 	combat_scene.call("setup_battle", enemy)
 	combat_scene.connect("battle_finished", _on_battle_finished)

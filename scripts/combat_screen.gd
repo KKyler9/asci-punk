@@ -8,7 +8,7 @@ const SynergySystemRes = preload("res://scripts/systems/synergy_system.gd")
 const EnemiesContentRes = preload("res://scripts/content/enemies.gd")
 const CardsContentRes = preload("res://scripts/content/cards.gd")
 
-@export var enemy_id := "sentinel"
+@export var enemy_id: String = "sentinel"
 
 @onready var enemy_label: RichTextLabel = $EnemyPanel/EnemyVBox/EnemyAscii
 @onready var enemy_stats: Label = $EnemyPanel/EnemyVBox/EnemyStats
@@ -20,11 +20,11 @@ const CardsContentRes = preload("res://scripts/content/cards.gd")
 
 var battle: Dictionary
 var enemy_frames: Array = []
-var frame_idx := 0
+var frame_idx: int = 0
 
 func _ready() -> void:
-	var enemy := _get_enemy(enemy_id)
-	var synergy := SynergySystemRes.analyze(GameState.save.player.deck)
+	var enemy: Dictionary = _get_enemy(enemy_id)
+	var synergy: Dictionary = SynergySystemRes.analyze(GameState.save.player.deck)
 	battle = CombatSystemRes.start_battle(GameState.save.player, enemy, synergy, GameState.rng)
 	CombatSystemRes.refresh_turn(battle, GameState.save.player)
 	enemy_frames = enemy.frames
@@ -54,7 +54,7 @@ func _refresh_ui() -> void:
 		hand.set_hand(battle.hand)
 
 func _on_card_play_requested(card_id: String) -> void:
-	var res := CombatSystemRes.play_card(battle, GameState.save.player, card_id)
+	var res: String = CombatSystemRes.play_card(battle, GameState.save.player, card_id)
 	if res != "ok":
 		battle.log.append(res)
 	else:
