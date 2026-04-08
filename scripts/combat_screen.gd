@@ -54,7 +54,7 @@ func _refresh_ui() -> void:
 		hand.set_hand(battle.hand)
 
 func _on_card_play_requested(card_id: String) -> void:
-	var res := CombatSystemRes.play_card(battle, GameState.save.player, card_id)
+	var res: String = CombatSystemRes.play_card(battle, GameState.save.player, card_id)
 	if res != "ok":
 		battle.log.append(res)
 	else:

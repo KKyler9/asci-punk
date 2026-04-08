@@ -27,7 +27,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func move(dir: Vector2i) -> void:
 	if GameState.current_run.is_empty():
 		return
-	EXP_SYS.move_player(GameState.current_run, dir)
+	if not EXP_SYS.move_player(GameState.current_run, dir):
+		info_label.text = "Blocked path (#). Find an opening."
+		return
 	resolve_tile()
 	refresh_map()
 
@@ -70,6 +72,11 @@ func refresh_map() -> void:
 		var row := ""
 		for x in run.width:
 			var pos := Vector2i(x, y)
+			var discovered := run.visited.has(pos)
+			var in_light := abs(pos.x - run.player.x) + abs(pos.y - run.player.y) <= int(run.get("light_radius", 2)) + 1
+			if not discovered and not in_light:
+				row += " "
+				continue
 			if pos == run.player:
 				row += "@"
 			elif pos == run.exit:
@@ -81,10 +88,11 @@ func refresh_map() -> void:
 			elif run.events.has(pos):
 				row += "?"
 			else:
-				row += "."
+				row += run.tiles[y][x]
 		lines.append(row)
 	map_label.text = "\n".join(lines)
-	info_label.text = "Move with WASD/Arrows. Rewards XP:%d C:%d M:%d" % [run.rewards.xp, run.rewards.credits, run.rewards.materials]
+	if not info_label.text.begins_with("Blocked") and not info_label.text.begins_with("Enemy") and not info_label.text.begins_with("Crate") and not info_label.text.begins_with("Event"):
+		info_label.text = "WASD/Arrows | @ You E Exit M Enemy $ Loot ? Event # Wall | XP:%d C:%d M:%d" % [run.rewards.xp, run.rewards.credits, run.rewards.materials]
 
 func open_combat(enemy: Dictionary) -> void:
 	combat_layer.visible = true
