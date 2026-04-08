@@ -16,7 +16,7 @@ static func load_data() -> Dictionary:
 	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
 	if file == null:
 		return {}
-	var parsed := JSON.parse_string(file.get_as_text())
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
 	if parsed is Dictionary:
 		return parsed
 	return {}
