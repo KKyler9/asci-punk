@@ -77,7 +77,7 @@ func load_game() -> void:
 	tick_background()
 	emit_signal("data_changed")
 
-func save_game() -> void:
+func save_game(_reason: String = "") -> void:
 	PERSIST.save_data(save)
 
 func request_scene(name: String) -> void:
