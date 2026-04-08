@@ -4,8 +4,8 @@ class_name DeckSystem
 static func can_add_to_deck(player: Dictionary, card_id: String) -> bool:
 	if player.deck.size() >= int(player.cyber_capacity):
 		return false
-	var owned := int(player.collection.get(card_id, 0))
-	var in_deck := 0
+	var owned: int = int(player.collection.get(card_id, 0))
+	var in_deck: int = 0
 	for id in player.deck:
 		if id == card_id:
 			in_deck += 1

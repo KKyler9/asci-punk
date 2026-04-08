@@ -7,7 +7,7 @@ const LIGHT_RADIUS := 2
 
 static func create_run(level: int) -> Dictionary:
 	var tiles: Array = _generate_tiles(level)
-	var run := {
+	var run: Dictionary = {
 		"width": WIDTH,
 		"height": HEIGHT,
 		"tiles": tiles,
@@ -52,7 +52,7 @@ static func _generate_tiles(level: int) -> Array:
 				row.append(_pick_terrain())
 		tiles.append(row)
 
-	var cursor := Vector2i(1, 1)
+	var cursor: Vector2i = Vector2i(1, 1)
 	while cursor.x < WIDTH - 2 or cursor.y < HEIGHT - 2:
 		tiles[cursor.y][cursor.x] = "."
 		if cursor.x < WIDTH - 2 and (cursor.y >= HEIGHT - 2 or randf() < 0.58):
@@ -63,7 +63,7 @@ static func _generate_tiles(level: int) -> Array:
 
 	var extra_carves: int = 42 + level * 2
 	for _i in extra_carves:
-		var p := Vector2i(randi_range(1, WIDTH - 2), randi_range(1, HEIGHT - 2))
+		var p: Vector2i = Vector2i(randi_range(1, WIDTH - 2), randi_range(1, HEIGHT - 2))
 		var steps: int = randi_range(4, 12)
 		for _s in steps:
 			tiles[p.y][p.x] = _pick_terrain()
@@ -79,7 +79,7 @@ static func _place_encounters(run: Dictionary, level: int) -> void:
 	var floor_cells: Array[Vector2i] = []
 	for y in run.height:
 		for x in run.width:
-			var pos := Vector2i(x, y)
+			var pos: Vector2i = Vector2i(x, y)
 			if pos == run.player or pos == run.exit:
 				continue
 			if _is_walkable(str(run.tiles[y][x])):
@@ -88,7 +88,7 @@ static func _place_encounters(run: Dictionary, level: int) -> void:
 	if floor_cells.is_empty():
 		return
 
-	var used := {}
+	var used: Dictionary = {}
 	var enemy_count: int = mini(floor_cells.size() / 5, 7 + level / 3)
 	var loot_count: int = mini(floor_cells.size() / 7, 5 + level / 4)
 	var event_count: int = mini(floor_cells.size() / 8, 4 + level / 5)
@@ -122,7 +122,7 @@ static func _reveal_around(run: Dictionary) -> void:
 		for dx in range(-radius, radius + 1):
 			if abs(dx) + abs(dy) > radius + 1:
 				continue
-			var pos := Vector2i(run.player.x + dx, run.player.y + dy)
+			var pos: Vector2i = Vector2i(run.player.x + dx, run.player.y + dy)
 			if pos.x < 0 or pos.y < 0 or pos.x >= run.width or pos.y >= run.height:
 				continue
 			run.visited[pos] = true
@@ -147,7 +147,7 @@ static func generate_map(width: int, height: int, _rng: RandomNumberGenerator) -
 	for y in max_h:
 		var row: Array = []
 		for x in max_w:
-			var pos := Vector2i(x, y)
+			var pos: Vector2i = Vector2i(x, y)
 			if pos == run.player:
 				row.append("P")
 			elif pos == run.exit:
@@ -165,7 +165,7 @@ static func map_to_text(grid: Array) -> String:
 	var lines: PackedStringArray = []
 	for row_variant: Variant in grid:
 		var row: Array = row_variant
-		var line := ""
+		var line: String = ""
 		for tile_variant: Variant in row:
 			line += str(tile_variant)
 		lines.append(line)

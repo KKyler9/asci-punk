@@ -5,7 +5,7 @@ static func durations() -> Dictionary:
 	return {"strength": 30, "defense": 40, "tech": 45}
 
 static func reward_for(kind: String, quality: float, level: int) -> Dictionary:
-	var gains := {}
+	var gains: Dictionary = {}
 	match kind:
 		"strength":
 			gains = {"attack": 1.0 + quality, "hp": 0.5}

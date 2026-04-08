@@ -34,7 +34,7 @@ func move(dir: Vector2i) -> void:
 	refresh_map()
 
 func resolve_tile() -> void:
-	var run = GameState.current_run
+	var run: Dictionary = GameState.current_run
 	var p: Vector2i = run.player
 	if p == run.exit:
 		GameState.add_xp(run.rewards.xp + 20)
@@ -52,7 +52,7 @@ func resolve_tile() -> void:
 		run.rewards.credits += randi_range(8, 22)
 		run.rewards.materials += randi_range(3, 8)
 		if randf() < 0.25:
-			var gear_ids = preload("res://scripts/content/gear_data.gd").all().keys()
+			var gear_ids: Array = preload("res://scripts/content/gear_data.gd").all().keys()
 			GameState.save.inventory.gear.append(gear_ids[randi() % gear_ids.size()])
 		info_label.text = "Crate opened: loot acquired"
 	elif run.events.has(p):
@@ -63,17 +63,17 @@ func resolve_tile() -> void:
 		info_label.text = "Event node: data cache synced"
 
 func refresh_map() -> void:
-	var run = GameState.current_run
+	var run: Dictionary = GameState.current_run
 	if run.is_empty():
 		map_label.text = "No run active"
 		return
-	var lines := []
+	var lines: Array[String] = []
 	for y in run.height:
-		var row := ""
+		var row: String = ""
 		for x in run.width:
-			var pos := Vector2i(x, y)
-			var discovered := run.visited.has(pos)
-			var in_light := abs(pos.x - run.player.x) + abs(pos.y - run.player.y) <= int(run.get("light_radius", 2)) + 1
+			var pos: Vector2i = Vector2i(x, y)
+			var discovered: bool = bool(run.visited.has(pos))
+			var in_light: bool = abs(pos.x - run.player.x) + abs(pos.y - run.player.y) <= int(run.get("light_radius", 2)) + 1
 			if not discovered and not in_light:
 				row += " "
 				continue
@@ -96,7 +96,7 @@ func refresh_map() -> void:
 
 func open_combat(enemy: Dictionary) -> void:
 	combat_layer.visible = true
-	var combat_scene := preload("res://scenes/Combat.tscn").instantiate()
+	var combat_scene: Control = preload("res://scenes/Combat.tscn").instantiate()
 	combat_layer.add_child(combat_scene)
 	combat_scene.call("setup_battle", enemy)
 	combat_scene.connect("battle_finished", _on_battle_finished)

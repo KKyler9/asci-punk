@@ -72,7 +72,7 @@ func _show_card_reward() -> void:
 	var all: Array = CardsContentRes.all_cards()
 	for _i in 3:
 		var card: Dictionary = all[GameState.rng.randi_range(0, all.size() - 1)]
-		var btn := Button.new()
+		var btn: Button = Button.new()
 		btn.text = "%s\n[%s]" % [card.name, card.cyber_type]
 		btn.custom_minimum_size = Vector2(180, 64)
 		btn.pressed.connect(func(): _pick_reward(card.id))

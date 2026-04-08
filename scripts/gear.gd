@@ -19,20 +19,20 @@ func refresh() -> void:
 	equipped.text = "Equipped Gear: %s\nImplants: %s" % [str(GameState.save.equipped_gear), str(GameState.save.installed_implants)]
 
 func _on_equip_gear_pressed() -> void:
-	var idx := gear_list.get_selected_items()
+	var idx: PackedInt32Array = gear_list.get_selected_items()
 	if idx.is_empty():
 		return
-	var item_id = GameState.save.inventory.gear[idx[0]]
-	var item = preload("res://scripts/content/gear_data.gd").all()[item_id]
+	var item_id: String = str(GameState.save.inventory.gear[idx[0]])
+	var item: Dictionary = preload("res://scripts/content/gear_data.gd").all()[item_id]
 	GameState.save.equipped_gear[item.slot] = item_id
 	GameState.save_game()
 	refresh()
 
 func _on_install_implant_pressed() -> void:
-	var idx := implant_list.get_selected_items()
+	var idx: PackedInt32Array = implant_list.get_selected_items()
 	if idx.is_empty():
 		return
-	var item_id = GameState.save.inventory.implants[idx[0]]
+	var item_id: String = str(GameState.save.inventory.implants[idx[0]])
 	if not GameState.save.installed_implants.has(item_id):
 		GameState.save.installed_implants.append(item_id)
 	GameState.save_game()
