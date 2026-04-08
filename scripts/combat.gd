@@ -48,8 +48,8 @@ func _on_ability_pressed() -> void:
 	if GameState.save.installed_implants.is_empty():
 		_log("No implant ability equipped")
 		return
-	var id := GameState.save.installed_implants[0]
-	var impl = preload("res://scripts/content/implant_data.gd").all()[id]
+	var id: String = str(GameState.save.installed_implants[0])
+	var impl: Dictionary = preload("res://scripts/content/implant_data.gd").all()[id]
 	if GameState.save.pet.energy_current < impl.energy_cost:
 		_log("Insufficient energy")
 		return
